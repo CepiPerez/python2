@@ -1,0 +1,722 @@
+* {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #0f0f0f;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.main-section {
+    min-height: calc(100dvh - 98px - 25px);
+}
+
+/* Estilos para el logo */
+.neonText {
+    color: #fff;
+    font-size: 1.35rem;
+    font-weight: 400;
+}
+
+.neonText.animated {
+    font-size: 1.75rem;
+    animation: glow 10s infinite; 
+    letter-spacing: .25rem;
+}
+
+@keyframes glow {
+    0%, 100% {
+        text-shadow:
+        0 0 7px #fff,
+        0 0 10px #fff,
+        0 0 21px #fff,
+        0 0 42px rgba(0, 255, 170, 0),
+        0 0 82px rgba(0, 255, 170, 0),
+        0 0 92px rgba(0, 255, 170, 0),
+        0 0 102px rgba(0, 255, 170, 0),
+        0 0 151px #0fa;
+    }
+    50% {
+        text-shadow:
+        0 0 7px #ffffff00,
+        0 0 10px #ffffff00,
+        0 0 21px #ffffff00,
+        0 0 42px rgba(0, 255, 170, 0),
+        0 0 82px rgba(0, 255, 170, 0),
+        0 0 92px rgba(0, 255, 170, 0),
+        0 0 102px rgba(0, 255, 170, 0),
+        0 0 151px rgba(0, 255, 170, 0);
+    }
+}
+
+
+/* Estilos para el encabezado */
+.header {
+    display: flex;
+    width: auto;
+    background-image: url(../imagenes/cine.jpg);
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    padding: 0 1rem;
+    height: 98px;
+}
+
+.header .menu {
+    color: white;
+    font-size: 2rem;
+    position: absolute;
+    right: 1.5rem;
+    top: 2rem;
+    opacity: .7;
+    transition: all .3s;
+}
+
+.header .logo-block {
+    display: flex;
+}
+
+.header .logo-block img {
+    margin-top: 1.5rem;
+    margin-right: 1rem;
+}
+
+
+/* Menu hamburguesa */
+.header .menu:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.menu-container {
+    height: 100dvh;
+    width: 300px;
+    background-color: #333;
+    color: white;
+    z-index: 9;
+    position: fixed;
+    top: 0;
+    right: -360px;
+    transition: all .3s ease;
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.menu-container-shadow {
+    opacity: 0;
+    transition: all .3s ease;
+    background-color: black;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100dvh;
+    width: 100vw;
+    z-index: 8;
+    pointer-events: none;
+}
+
+.menu-container.opened ~ .menu-container-shadow {
+    opacity: .7;
+    pointer-events: all;
+}
+
+.menu-container.opened {
+    right: 0;
+}
+
+.menu-container ul {
+    padding-inline-start: 0;
+}
+
+.menu-container li {
+    list-style-type: none;
+    padding: .35rem 0;
+    width: 100%;
+}
+
+.menu-container a {
+    color: white;
+    font-size: .95rem;
+}
+
+.menu-container hr {
+    border-color: #666;
+}
+
+.footer {
+    text-align: center;
+    background-color: rgb(238, 228, 32);
+    color: black; 
+    padding: 10px;
+    height: 25px;
+}
+
+
+@media (max-width: 768px) {
+    .header {
+        height: 82px;
+    }
+    .footer {
+        height: 50px;
+    }
+    .main-section {
+        min-height: calc(100dvh - 82px - 50px);
+    }    
+    .menu-container a {
+        font-size: 1.15rem;
+    }
+    .neonText.animated {
+        letter-spacing: normal;
+        font-size: 1.5rem;
+    }
+    .header .logo-block img {
+        width: 30px;
+        height: 30px;
+    }
+    .header .menu {
+        font-size: 1.75rem;
+        top: 1.75rem;
+    }
+}
+
+
+/* Elementos varios */
+hr {
+    border-color: darkslategray;
+    margin: .5rem 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+.subtitulo {
+    margin: 1rem;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+
+/* Barra de navegacion */
+.botonera {
+    display: flex;
+    width: 100%;
+    background-color: rgb(238, 228, 32);
+    color: rgb(0, 0, 0);
+    justify-content: space-around; /* Distribuye los elementos de manera uniforme en el ancho */;
+    flex-direction: row;
+}
+
+.botonera_item {
+    text-transform: uppercase;
+    padding: .5rem 2rem;
+    font-size: .8rem;
+    cursor: pointer;
+    opacity: .6;
+    transition: all .6s ease;
+    text-align: center;
+}
+
+.botonera_item.active {
+    opacity: 1;
+    font-weight: 600;
+}
+
+.botonera_item:hover {
+    opacity: 1;
+}
+
+
+/* Barra de navegacion nueva */
+.tab-container {
+	margin: 1rem 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.tabs {
+	display: flex;
+	position: relative;
+	background-color: #333;
+	box-shadow: 0 0 1px 0 rgba(#185ee0, 0.15), 0 6px 12px 0 rgba(#185ee0, 0.15);
+	padding: 0.75rem;
+	border-radius: 99px;
+}
+.tabs > * {
+    z-index: 2;
+}
+
+input[type="radio"] {
+	display: none;
+}
+
+.tab {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 1.5rem;
+	width: 200px;
+	font-size: .85rem;
+	font-weight: 500;
+    text-transform: uppercase;
+	border-radius: .25rem;
+	cursor: pointer;
+	transition: color 0.15s ease-in;
+}
+
+input[type="radio"] ~ label {
+    color: #a3a3a3;
+}
+
+input[id="radio-1"]:checked ~ .glider {
+    transform: translateX(0);
+}
+
+input[id="radio-2"]:checked ~ .glider {
+    transform: translateX(100%);
+}
+
+input[id="radio-3"]:checked ~ .glider {
+    transform: translateX(200%);
+}
+
+input[id="radio-4"]:checked ~ .glider {
+    transform: translateX(300%);
+}
+
+.glider {
+	position: absolute;
+    top: .5rem;
+	display: flex;
+	height: 2rem;
+	width: 200px;
+	background-color: #555;
+	z-index: 1;
+	border-radius: 2rem;
+	transition: 0.25s ease-out;
+}
+
+@media (max-width: 850px) {
+	.tabs {
+		display: grid;
+        border-radius: 1.5rem;
+	}
+    .tab {
+        height: 2.5rem;
+        width: 300px;
+        font-size: 1rem;
+    }
+    .glider {
+        width: 300px;
+        height: 2.5rem;
+        margin-left: .75rem;
+        margin-top: .25rem;
+    }
+    input[id="radio-1"]:checked ~ .glider {
+        transform: translateX(0);
+    }
+    input[id="radio-2"]:checked ~ .glider {
+        transform: translateY(100%);
+    }
+    input[id="radio-3"]:checked ~ .glider {
+        transform: translateY(200%);
+    }
+    input[id="radio-4"]:checked ~ .glider {
+        transform: translateY(300%);
+    }
+}
+
+
+
+
+
+
+/* Caratulas de peliculas y detalles */
+.peliculas_listado {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2rem;
+    transition: all 5s ease;
+    min-height: 400px;
+}
+
+.pelicula_caja {
+    width: 200px;
+    text-align: center;
+    position: relative;
+    transform: scale(.5);
+    transition: opacity 1s ease, transform .6s ease;
+    opacity: 0;
+}
+
+.pelicula_caja.loaded {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.pelicula_titulo {
+    font-size: .8rem;
+    color: darkslategray;
+    margin: 1rem 1rem 2rem;
+    transition: all .6s ease;
+}
+
+.pelicula_calificacion {
+    position: absolute;
+    left: inherit;
+    top: 222px;
+    left: 83px;
+    background-color: darkslateblue;
+    color: white;
+    font-size: .6rem;
+    border-radius: .5rem;
+    padding: .25rem .35rem;
+    width: 24px;
+    text-align: center;
+}
+
+.pelicula_poster {
+    height: 230px;
+    width: auto;
+    border-radius: .5rem;
+    margin: 0 1rem;
+    background-color: gray;
+    opacity: .7;
+    transition: all .6s ease;
+}
+
+.pelicula_caja:hover .pelicula_poster {
+    opacity: 1;
+    scale: 1.05;
+}
+
+.pelicula_caja:hover .pelicula_titulo {
+    color: slategray;
+}
+
+.detalle_pelicula {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 0 1.5rem 0;
+    position: relative;
+    padding: 1rem;
+}
+
+.detalle_pelicula_fondo {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
+}
+
+.detalle_pelicula_fondo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: black;
+    opacity: .8; 
+}
+
+.detalle_pelicula_imagen {
+    width: 30%;
+    z-index: 1;
+}
+
+.detalle_pelicula_imagen.coleccion {
+    width: 200px;
+}
+
+.detalle_pelicula_texto {
+    width: calc(70% - 3rem);
+    color: rgb(255, 255, 255);
+    margin-left: 2rem;
+    z-index: 1;
+}
+
+.pelicula_poster_grande {
+    height: auto;
+    width: 100%;
+    border-radius: .5rem;
+    transition: all .3s ease;
+}
+
+.pelicula_imagen {
+    height: auto;
+    width: min(100%, 400px);
+    border-radius: .5rem;
+    transition: all .3s ease;
+}
+
+.pelicula_detalle_produccion {
+    display: flex;
+    color: white;
+}
+
+.pelicula_detalle_produccion_item{
+    display: flex;
+    flex-direction: column;
+    color: white;
+    margin: 1rem 3rem 0 0;
+    font-size: .9rem;
+    line-height: 1.45rem;
+}
+
+.pelicula_detalle_video {
+    color: slateblue;
+    text-decoration: none;
+    transition: all .6s ease;
+    padding: .2rem 0;
+    font-size: .85rem;
+    width: fit-content;
+}
+
+.pelicula_detalle_video:hover {
+    color: lightsteelblue;
+}
+
+.pelicula_trailer {
+    margin: 1rem .5rem;
+}
+
+.pelicula_videos {
+    color: slategray;
+    flex-direction: column;
+    margin: 0 1rem;
+}
+
+.pelicula_coleccion {
+    display: flex;
+    color: slategray;
+    flex-wrap: nowrap;
+    margin: 0 1rem 1.5rem;
+    background-color: #1d1d1d;
+    border-radius: .5rem;
+    padding: 1rem;
+}
+
+.pelicula_coleccion img {
+    border-radius: .5rem;
+    margin-right: 1rem;
+}
+
+.pelicula_coleccion a {
+    color: #a2b3c4;
+    transition: all .6s ease;
+    font-weight: 600;
+}
+
+.pelicula_coleccion a:hover {
+    color: #cbdcec;
+}
+
+.estudios {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: white;
+    margin: .5rem 1rem 4rem;
+    width: fit-content;
+    border-radius: .35rem;
+}
+
+.estudios img {
+    height: 24px;
+    margin: .5rem;
+}
+
+.pelicula_reparto {
+    display: flex;
+    flex-direction: column;
+}
+
+.pelicula_actor {
+    display: flex;
+    width: 100%;
+    margin: .25rem 1rem .25rem 0;
+}
+
+.pelicula_actor .image {
+    height: 50px;
+    width: 42px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: .5rem;
+}
+
+.pelicula_actor_detalle {
+    display: flex;
+    flex-direction: column;
+    margin: .35rem 1rem 0;
+    color: white;
+}
+
+.pelicula_actor_detalle span {
+    color: slategray;
+    font-size: .8rem;
+    padding-top: 5px;
+}
+
+
+@media (max-width: 768px) {
+    .botonera {
+        flex-direction: column;
+    }
+
+    .detalle_pelicula {
+        margin: 0;
+    }
+
+    .detalle_pelicula_fondo {
+        height: 300px;
+    }
+
+    .detalle_pelicula_fondo::before {
+        opacity: 0.5;
+    }
+
+    .detalle_pelicula_imagen {
+        width: 180px;
+    }
+
+    .detalle_pelicula_imagen.coleccion {
+        width: 180px;
+    }
+
+    .detalle_pelicula_texto {
+        margin-top: 2rem;
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .pelicula_detalle_produccion_item{
+        margin: 0 3rem 0 0;
+    }
+    
+    .pelicula_videos {
+        margin: 0 1rem;
+    }
+}
+
+
+/* Circulo de porcentaje de calificacion */
+.small-percent-container {
+    position: absolute;
+    top: 198px;
+    width: 46px;
+    left: 77px
+}
+
+.percent-box {
+    position: relative;
+    padding: 16px 0;
+    width: 46px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.percent-box .circle {
+    position: relative;
+    height: 46px;
+    width: 46px;
+    background: conic-gradient(from 0deg, var(--clr) 0%, var(--clr) 0% var(--i), #333 var(--i), #333 100%);
+    border-radius: 50%;
+}
+
+.percent-box .circle.small {
+    height: 30px;
+    width: 30px;
+}
+
+.percent-box .circle.small span{
+    font-size: 10px;
+    top: 8px;
+    width: 30px;
+    left: 0;
+}
+
+.percent-box .circle::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    background: #0f0f0f;
+    border-radius: 50%;
+}
+
+.percent-box .circle.small::before {
+    inset: 2px;
+}
+
+.percent-box span {
+    position: absolute;
+    text-align: center;
+    font-size: .9rem;
+    color: lightsteelblue;
+    top: 13px;
+    width: 46px;
+}
+
+.percent-box span i {
+    font-size: .45rem;
+    position: absolute;
+    top: 4px;
+}
+
+.percent-box span small {
+    font-size: .5rem;
+}
+
+.percent-box.ranked .circle span {
+    width: 40px;
+}
+
+
+/* Estilos para formularios */
+
+.form-container {
+    margin: 1rem;
+    background-color: #333;
+    padding: 1rem;
+    border-radius: .5rem;
+}
+
+input[type=text], select, textarea {
+    width: 100%;
+    padding: .35rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    resize: vertical;
+}
+  
+input[type=button] {
+    background-color: #04AA6D;
+    color: white;
+    padding: .35rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: #0ad88c;
+}
+
+input[type=text].error, select.error, textarea.error {
+   border-color: #df3535;
+   border-width: 2px;
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0">
+    <title>CineFilmToday</title>
+
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" />
+
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/app.css') }}">
+
+</head>
+<body>
+    <div class="header">
+        <a href="/">
+            <div class="logo-block">
+                <img src="{{ url_for('static', filename='imagenes/logo-blanco.png') }}" alt="" width="44" height="42">
+                <h3 class="neonText animated">CineFilmToday</h3>
+            </div>
+        </a>
+        <i id="mainmenu" class="menu ri-menu-5-line"></i>
+    </div>
+
+    <!-- MENU HAMBURGUESA -->
+    <div class="menu-container">
+        <img src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="" width="120">
+        <h3 class="neonText">CineFilmToday</h3>
+        <hr>
+        <ul>
+            <li>
+                <a href="/">INICIO</a>
+            </li>
+            <li>
+                <a href="/contacto">CONTACTO</a>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- SOMBRA PARA MENU HAMBURGUESA -->
+    <div class="menu-container-shadow"></div>
+
+
+    <section class="main-section">
+
+        {% block content %}{% endblock %}
+
+    </section>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="{{ url_for('static', filename='assets/app.js') }}"></script>
+
+
+</body>
+</html>
