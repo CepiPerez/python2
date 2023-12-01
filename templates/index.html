@@ -4,36 +4,111 @@
 <!-- BOTONERA NUEVA -->
 <div class="tab-container">
     <div class="tabs">
-        <input type="radio" id="radio-1" name="tabs" data-tag="now_playing" onclick="cambiarListado('now_playing')" checked />
-        <label class="tab active" for="radio-1">En cartelera</label>
-        <input type="radio" id="radio-2" name="tabs" data-tag="popular" onclick="cambiarListado('popular')" />
+        <input type="radio" id="radio-1" onclick="cambiarListado('now_playing')" />
+        <label class="tab" for="radio-1">En cartelera</label>
+        <input type="radio" id="radio-2" onclick="cambiarListado('populares')" />
         <label class="tab" for="radio-2">Populares</label>
-        <input type="radio" id="radio-3" name="tabs" data-tag="top_rated" onclick="cambiarListado('top_rated')" />
+        <input type="radio" id="radio-3" onclick="cambiarListado('top')" />
         <label class="tab" for="radio-3">Mejor calificadas</label>
-        <input type="radio" id="radio-4" name="tabs" data-tag="upcoming" onclick="cambiarListado('upcoming')" />
+        <input type="radio" id="radio-4" onclick="cambiarListado('proximamente')" />
         <label class="tab" for="radio-4">Próximos estrenos</label>
         <span class="glider"></span>
     </div>
+
+    <script>
+        var seccion_actual = "{{ seccion }}"
+
+        if (seccion_actual=="en_cartelera")
+            document.getElementById('radio-1').checked = true;
+        else if (seccion_actual=="populares")
+            document.getElementById('radio-2').checked = true;
+        else if (seccion_actual=="top")
+            document.getElementById('radio-3').checked = true;
+        else if (seccion_actual=="proximamente")
+            document.getElementById('radio-4').checked = true;
+
+    </script>
 </div>
+
+<div class="buscador_container">
+    <form action="{{ url_for('buscar') }}" method="GET" id="form_buscar">
+      <mi-buscador valor="{{buscar}}" form="form_buscar" id="buscador" name="query" fallback="{{ url_for('index') }}">
+        <!-- El cuadro de texto de busqueda se genera con javascript-->
+      </mi-buscador>
+</div>
+
 
 
 <div class="peliculas_listado" id="listado">
-    <!-- ACA VA LA LISTA DE PELICULAS - SE CARGAN CON JAVASCRIPT -->
+    <!-- ACA VA LA LISTA DE PELICULAS - SE CARGAN CON UN FOR -->
+    {% for pelicula in resultado.results %}
+
+        <!-- Calculamos el porcentaje de calificación de la película y lo mostramos con una barra circular --> 
+        {% set porcentaje = (pelicula['vote_average'] * 10) | int %}
+        {% if porcentaje >= 70 %}
+            {% set color = '#23cf23' %}
+        {% elif porcentaje >= 40 %}
+            {% set color = 'orange' %}
+        {% elif porcentaje > 0 %}
+            {% set color = 'red' %}
+        {% else %}
+            {% set color = '#333' %}
+        {% endif %}
+
+        {% if pelicula['poster_path'] %}
+            {% set poster = 'https://image.tmdb.org/t/p/w300/' + pelicula['poster_path'] %}
+        {% elif pelicula['backdrop_path'] %}
+            {% set poster = 'https://image.tmdb.org/t/p/w300/' + pelicula['backdrop_path'] %}
+        {% else %}
+            {% set poster = url_for('static', filename='assets/caratula.jpg') %}
+        {% endif %}
+
+        <a class="pelicula_caja" href="/detalle?id={{pelicula['id']}}&amp;path={{poster.replace('/', '').replace('.jpg', '')}}">
+            <img class="pelicula_poster" src="{{poster}}" alt="" loading="lazy">
+            <p class="pelicula_titulo">{{pelicula['original_title']}}</p>
+            <div class="small-percent-container">
+                <div class="percent-container" id="circular">
+                    <div class="percent-box" id="percent-box" style="--i:{{porcentaje}}%; --clr:{{color}}">
+                        <div class="circle small">
+                            <span id="percent-text">{{porcentaje}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
 
 </div>
 
-<script src="{{ url_for('static', filename='assets/api.js') }}"></script>
+
+<ul id="paginator" class="pagination m-0">
+    <li>
+        <a id="pagination_first" href="">Primera</a>
+    </li>
+    <li>
+        <a id="pagination_previous" href="">Anterior</a>
+    </li>
+    <li>
+        <a id="pagination_next" href="">Siguiente</a>
+    </li>
+    <li>
+        <a id="pagination_last" href="">Ultima</a>
+    </li>    
+</ul>
+
+<script src="{{ url_for('static', filename='assets/buscador.js') }}"></script>
 
 <script>
     // Parametro para ver cual es el boton activo del menu
     const botonera = document.querySelectorAll('.tab-container .tab');
 
     // Parametros para generar la lista de peliculas
-    const main = document.getElementById('listado');
+    const paginador = document.getElementById('paginator');
 
     // Creamos el observer para la animacion de caratulas
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
+    const cards = document.querySelectorAll(".pelicula_caja");
+    const observer = new IntersectionObserver(cards => {
+        cards.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.toggle("loaded", entry.isIntersecting)
                 observer.unobserve(entry.target)
@@ -41,29 +116,18 @@
         })
     });
 
-    // Esta funcion limpia la lista acual de películas
-    // Luego llama a la API para cargar la lista nueva
-    function cambiarListado(seleccion) {
-        
-        main.innerHTML = '';
+    generarPaginado('{{seccion}}', '{{buscar}}', '{{resultado.page}}', '{{resultado.total_pages}}')
 
-        for (boton of botonera) {
-            if (boton.getAttribute('data-tag') == seleccion) {
-                boton.classList.add('active')
-            } else {
-                boton.classList.remove('active')
-            }
-        }
+    
+    cards.forEach( card => {
+        card.style.transitionDelay = (card.getBoundingClientRect().left / 2) + 'ms'
+        observer.observe(card);
+    });
 
-        // Usamos la API para traer los datos
-        // Cargamos la lista de peliculas en el HTML
-        cargarListadoPeliculas(seleccion).then( function(res) {
-            generarListadoPeliculas(res, main);
-        });
 
+    function cambiarListado(seccion) {
+        window.location.href = "/" + seccion;
     }
-
-    cambiarListado('now_playing');
 
     
 </script>

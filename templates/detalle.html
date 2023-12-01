@@ -1,166 +1,253 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0">
-    <title>CineFilmToday</title>
+{% extends 'layout.html' %}
+{% block content %}
 
-    <link rel="icon" type="image/png" href="imagenes/favicon.png" />
+<div class="detalle_pelicula">
 
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/app.css">
+    {% if respuesta['detalle']['backdrop_path']  %}
+        {% set fondo = respuesta['detalle']['backdrop_path'] %}
+    {% else %}
+        {% set fondo = respuesta['detalle']['poster_path'] %}
+    {% endif %}
 
-</head>
-<body>
+    <div class="detalle_pelicula_fondo" id="detalle_pelicula_fondo" style="background-image: url(https://image.tmdb.org/t/p/original/{{fondo}});"></div>
 
-    <div class="header">
-        <a href="index.html">
-            <div class="logo-block">
-                <img src="imagenes/logo-blanco.png" alt="" width="44" height="42">
-                <h3 class="neonText animated">CineFilmToday</h3>
-            </div>
-        </a>
-        <i id="mainmenu" class="menu ri-menu-5-line"></i>
+
+    <div class="detalle_pelicula_imagen">
+        <img id="poster" class="pelicula_poster_grande" src="https://image.tmdb.org/t/p/w500/{{poster}}.jpg" alt="">
+
     </div>
 
-    <!-- MENU HAMBURGUESA -->
-    <div class="menu-container">
-        <img src="imagenes/logo.png" alt="" width="120">
-        <h3 class="neonText">CineFilmToday</h3>
-        <hr>
-        <ul>
-            <li>
-                <a href="index.html">INICIO</a>
-            </li>
-            <li>
-                <a href="contacto.html">CONTACTO</a>
-            </li>
-        </ul>
-    </div>
-    
-    <!-- SOMBRA PARA MENU HAMBURGUESA -->
-    <div class="menu-container-shadow"></div>
-
-    <section class="main-section">
-    
-        <div class="detalle_pelicula">
-    
-            <div class="detalle_pelicula_fondo" id="detalle_pelicula_fondo"></div>
-    
-    
-            <div class="detalle_pelicula_imagen">
-                <img id="poster" class="pelicula_poster_grande" src="" alt="">
-    
-            </div>
-    
-            <div class="detalle_pelicula_texto">
-                <h2 id="titulo" style="margin:0;color:white"></h2>
-                
-                <p id="titulo_traducido" style="margin:.75rem 0;font-size:.9rem"></p>
+    <div class="detalle_pelicula_texto">
+        <h2 id="titulo" style="margin:0;color:white">
+            {{ respuesta['detalle']['original_title'] }}
+            <span style="font-weight:100;margin-left:.5rem;opacity:.7;"> 
+                {{ respuesta['detalle']['release_date'][:4] }}
+            </span>
+        </h2>
         
-                <div style="display:flex;">
-                    <div>
-                        <div class="percent-container" id="circular">
-                            <div class="percent-box" id="percent-box" style="--i:100%;--clr:#333">
-                                <div class="circle">
-                                    <span id="percent-text">SC</span>
-                                </div>
-                            </div>
+        <!-- Si el nombre original es distinto que el nombre traducido lo mostramos
+        (para evitar mostrar dos titulos iguales) -->
+        {% if respuesta['detalle']['original_title'] != respuesta['detalle']['title'] %}
+            <p id="titulo_traducido" style="margin:.75rem 0;font-size:.9rem">{{ respuesta['detalle']['title'] }}</p>
+        {% endif %}
+
+        <!-- Calculamos el porcentaje de calificación de la película y lo mostramos con una barra circular --> 
+        {% set porcentaje = (respuesta['detalle']['vote_average'] * 10) | int %}
+        {% set ranked = 'ranked' %}
+        {% if porcentaje >= 70 %}
+            {% set color = '#23cf23' %}
+        {% elif porcentaje >= 40 %}
+            {% set color = 'orange' %}
+        {% elif porcentaje > 0 %}
+            {% set color = 'red' %}
+        {% else %}
+            {% set color = '#333' %}
+            {% set ranked = '' %}
+        {% endif %}
+
+        <div style="display:flex;">
+            <div>
+                <div class="percent-container" id="circular">
+                    <div class="percent-box {{ranked}}" id="percent-box" style="--i:{{porcentaje}}%; --clr:{{color}}">
+                        <div class="circle">
+                            <span id="percent-text">
+                                {% if porcentaje > 0 %}
+                                    {{ porcentaje }}
+                                    <i>%</i>
+                                {% else %}
+                                    SC
+                                {% endif %}
+                            </span>
                         </div>
                     </div>
-                    <div style="margin: .15rem 1.5rem">
-                        <p id="fecha" style="font-size:.8rem;"></p>
-                        <p id="genero" style="font-size:.8rem;font-weight:600;"></p>
-                    </div>
                 </div>
-    
-                <i id="tag" style="opacity: .7;"></i>
-    
-                <p style="font-size:1.15rem;font-weight:500;margin-bottom:0;">Vista general</p>
-                <p id="sinopsis" style="font-size:.9rem;margin-top:.5rem"></p>
-        
-                <p id="calificacion" style="font-size:.9rem;margin-top:2rem;"></p>
-    
-                <p id="duracion" style="font-size:.9rem"></p>
-    
-                <div id="pelicula_detalle_produccion" class="pelicula_detalle_produccion">
-    
-                </div>
-    
             </div>
-    
-    
-        </div>
-    
-        <div id="coleccion" class="pelicula_coleccion" style="display:none;">
-            
-        </div>
-    
-        <div id="reparto" style="display: none; margin: 0 1rem;">
-            <p style="margin: 1rem 0 .5rem; font-size: 1rem; color: slategray">Reparto:</p>
-            <div id="reparto_lista" class="pelicula_reparto" >
-    
+            <div style="margin: .15rem 1.5rem">
+                <p id="fecha" style="font-size:.8rem;">
+                    Lanzamiento:
+                    <b>
+                        {{ respuesta['detalle']['release_date'][8:10] }}-{{ respuesta['detalle']['release_date'][5:7] }}-{{ respuesta['detalle']['release_date'][0:4] }}
+                    </b>
+                </p>
+
+                <p id="genero" style="font-size:.8rem;font-weight:600;">
+                    {% if respuesta['detalle']['genres'] | length == 0 %}
+                        No clasificada
+                    {% else %}
+                        {% for genero in respuesta['detalle']['genres'] %}
+                            {{genero['name']}}{% if not loop.last %} - {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </p>
             </div>
         </div>
-    
-        <div id="trailer" class="pelicula_trailer" style="display: none;">
-        </div>
-    
-        <div id="videos" class="pelicula_videos" style="display: none;">
-            <p style="margin: 1rem 0 .25rem; font-size: .8rem;">Videos disponibles:</p>
-    
-        </div>
-    
-        <p id="estudios_titulo" style="color:gray;font-size:.8rem;margin:1.5rem 1rem 0;display: none;">Productoras:</p>
-        <div id="estudios" class="estudios" style="display: none;">            
-        </div>
 
-    </section>
+        <i id="tag" style="opacity: .7;">
+            {{ respuesta['detalle']['tagline'] }}
+        </i>
 
+        <p style="font-size:1.15rem;font-weight:500;margin-bottom:0;">
+            Vista general
+        </p>
 
-    <!-- Footer -->
-    <div class="footer">
-        Created by team 14. CaC 23523, python full stack. All rights reserved.2023
+        <p id="sinopsis" style="font-size:.9rem;margin-top:.5rem">
+            {% if respuesta['detalle']['overview'] %}
+                {{ respuesta['detalle']['overview'] }}
+            {% else %}
+                No hay una descripción disponible para esta película.
+            {% endif %}
+        </p>
+
+        <p id="calificacion" style="font-size:.9rem;margin-top:2rem;">
+            Calificación: 
+            <b>
+                {% if porcentaje > 0 %}
+                    {{ '%0.2f'| format(respuesta['detalle']['vote_average']|float) }}<i>%</i>
+                {% else %}
+                    Sin Calificar
+                {% endif %}
+            </b> 
+        </p>
+
+        <p id="duracion" style="font-size:.9rem">
+            {% set hours = (respuesta['detalle']['runtime'] / 60) | int %}
+            {% set minutes = respuesta['detalle']['runtime'] - (hours*60) %}
+
+            Duración:
+            <b>
+                {% if hours > 0 %}{{hours}}h {% endif %}{{minutes}}m
+            </b>
+        </p>
+
+        {% if respuesta['reparto']['crew'] | length > 0 %}
+        <div id="pelicula_detalle_produccion" class="pelicula_detalle_produccion">
+            {% set global = namespace(personal={}) %}
+
+            {% for persona in respuesta['reparto']['crew'] %}
+                {%if persona['job']=='Director' or persona['job']=='Writer' %}
+                    {% set x = global.personal.__setitem__(persona['name'], persona['job']) %}
+                {% endif %}
+            {% endfor %}
+                
+            {% for persona in global.personal %}
+                <div class="pelicula_detalle_produccion_item">
+                    <span style="font-weight:600;">{{persona}}</span>
+                    <span style="opacity: .7;">{{global.personal[persona]}}</span>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
     </div>
 
-
-    <!-- JAVASCRIPT -->
-
-    <script src="assets/app.js"></script>
-    <script src="assets/api.js"></script>
-
-    <script>
-        // Parametros de la query para obtener ID de la pelicula
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        const params = Object.fromEntries(urlSearchParams.entries());
-
-        // Parametros para el detalle de la pelicula
-        const calificacion= document.getElementById('percent-box');
-        const calificacionText = document.getElementById('percent-text');
-        const estudios = document.getElementById('estudios');
-        const estudiosTitulo = document.getElementById('estudios_titulo');
-        const coleccion = document.getElementById('coleccion');
-
-        // Parametros para la lista de videos
-        const trailer = document.getElementById('trailer');
-        const listaVideos = document.getElementById('videos');
-
-        // Parametros para la lista de actores y directores (reparto)
-        const reparto = document.getElementById('reparto');
-        const listaReparto = document.getElementById('reparto_lista');
-        const produccion = document.getElementById('pelicula_detalle_produccion');
-
-        // Usamos la API para traer los datos
-        // Cargamos los datos en el HTML
-        cargarDetallePelicula(params.id).then( function(res) {
-            generarDetallePelicula(res.detalle, calificacion, calificacionText, estudios, estudiosTitulo, coleccion)
-            generarVideosPelicula(res.videos, trailer, listaVideos)
-            generarRepartoPelicula(res.reparto, reparto, listaReparto, produccion)
-        });
+</div>
 
 
-    </script>
+<!-- Si la película pertenece a una colección (saga)
+mostramos una sección con el póster y el nombre 
+para que se pueda acceder a la misma -->
+{% if respuesta['detalle']['belongs_to_collection'] %}
+    {% if respuesta['detalle']['belongs_to_collection']['poster_path'] %}
+        {% set coleccion_poster = respuesta['detalle']['belongs_to_collection']['poster_path'] %}
+    {% else %}
+        {% set coleccion_poster = respuesta['detalle']['belongs_to_collection']['backdrop_path'] %}
+    {% endif %}
+    <div id="coleccion" class="pelicula_coleccion">
+        <img src="https://image.tmdb.org/t/p/w200/{{coleccion_poster}}" alt="" height="180px" width="auto">
+        <div>
+            <p>Esta película es parte de</p>
+            {% set coleccion_path = coleccion_poster.replace('/', '').replace('.jpg', '') %}
+            <a href="coleccion?id={{respuesta['detalle']['belongs_to_collection']['id']}}&path={{coleccion_path}}">
+                {{respuesta['detalle']['belongs_to_collection']['name']}}
+            </a>
+        </div>
+    </div>
+{% endif %}
 
 
-</body>
-</html>
+<!-- Agregamos una lista de los actores -->
+{% if respuesta['reparto']['cast'] | length > 0 %}
+<div id="reparto" style="margin: 0 1rem;">
+    <p style="margin: 1rem 0 .5rem; font-size: 1rem; color: slategray">Reparto:</p>
+    <div id="reparto_lista" class="pelicula_reparto" >
+
+        {% for actor in respuesta['reparto']['cast'] %}
+        <div class="pelicula_actor"> 
+            {% if actor['profile_path'] %} 
+                <div class="image" style="background-image:url(https://image.tmdb.org/t/p/w200/{{actor['profile_path']}})"></div>
+                <div class="pelicula_actor_detalle">
+            {% else %}
+                <div class="pelicula_actor_detalle" style="margin-left:0;">
+            {% endif %}
+                <div>{{actor['name']}}</div><span>{{actor['character']}}</span>
+                </div>
+            </div>
+            {% if loop.index > 4 %}
+                {% break %}
+            {% endif %}
+        {% endfor %}
+
+    </div>
+</div>
+{% endif %}
+
+<!-- Agregamos una lista de las videos -->
+{% if respuesta['videos'] | length > 0 %}
+    {% set global = namespace(trailer='') %}
+    {% set global = namespace(contador=0) %}
+
+    {% for video in respuesta['videos'] %}
+        {% if video['site']=='YouTube' and video['type']=='Trailer' %}
+            {% set global.trailer = video['id'] %}
+            <div id="trailer" class="pelicula_trailer">
+                <iframe id="video_trailer" class="pelicula_trailer" src="https://www.youtube.com/embed/{{video['key']}}">
+                </iframe>
+            </div>
+            {% break %}
+        {% endif %}
+    {% endfor %}
+
+
+    <div id="videos" class="pelicula_videos">
+        <p style="margin: 1rem 0 .25rem; font-size: .8rem;">Videos disponibles:</p>
+        {% for video in respuesta['videos'] %}
+            {% if video['site']=='YouTube' and video['id']!=global.trailer %}
+                {% set global.contador = global.contador + 1 %}
+                <a class="pelicula_detalle_video" target="_blank" href="https://www.youtube.com/watch?v={{video['key']}}">
+                    {{video['name']}}
+                </a><br>
+            {% endif %}
+            {% if global.contador > 5 %}
+                {% break %}
+            {% endif %}
+        {% endfor %}
+    </div>
+
+{% endif %}
+
+
+<!-- Agregamos una lista de las productoras -->
+{% if respuesta['detalle']['production_companies'] | length > 0 %}
+    <p id="estudios_titulo" style="color:gray;font-size:.8rem;margin:1.5rem 1rem 0;">
+        Productoras:
+    </p>
+    <div id="estudios" class="estudios">     
+        {% for productora in respuesta['detalle']['production_companies'] %}
+            <img src="https://image.tmdb.org/t/p/w200/{{productora['logo_path']}}">
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+<script>
+    // Redimensionamos el video (trailer)
+    var w = window.innerWidth;
+    w = w > 650 ? 650 : w;
+    w = w - (w < 768 ? 40 : 90); 
+    var h = parseInt((w / 16) * 9); 
+    var videoframe = document.getElementById('video_trailer');
+    videoframe.setAttribute('height', h);
+    videoframe.setAttribute('width', w);
+</script>
+
+{% endblock %}

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0">
     <title>CineFilmToday</title>
 
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" />
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon.png') }}" />
 
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/app.css') }}">
@@ -15,7 +15,7 @@
     <div class="header">
         <a href="/">
             <div class="logo-block">
-                <img src="{{ url_for('static', filename='imagenes/logo-blanco.png') }}" alt="" width="44" height="42">
+                <img src="{{ url_for('static', filename='assets/logo-blanco.png') }}" alt="" width="44" height="42">
                 <h3 class="neonText animated">CineFilmToday</h3>
             </div>
         </a>
@@ -24,10 +24,17 @@
 
     <!-- MENU HAMBURGUESA -->
     <div class="menu-container">
-        <img src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="" width="120">
+        <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="" width="120">
         <h3 class="neonText">CineFilmToday</h3>
         <hr>
         <ul>
+            {% if usuario %}
+                <li>
+                    <span>{{ usuario }}</span>
+                    <a class="btn-logout fa fa-times-circle-o" aria-hidden="true" href="{{ url_for('logout') }}"></a>
+                </li>
+                <br>
+            {% endif %}
             <li>
                 <a href="/">INICIO</a>
             </li>
@@ -40,17 +47,15 @@
     <!-- SOMBRA PARA MENU HAMBURGUESA -->
     <div class="menu-container-shadow"></div>
 
+    <script src="{{ url_for('static', filename='assets/app.js') }}"></script>
+    <script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
+
 
     <section class="main-section">
 
         {% block content %}{% endblock %}
 
     </section>
-
-
-    <!-- JAVASCRIPT -->
-
-    <script src="{{ url_for('static', filename='assets/app.js') }}"></script>
 
 
 </body>

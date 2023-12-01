@@ -1,112 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0">
-    <title>CineFilmToday</title>
+{% extends 'layout.html' %}
+{% block content %}
 
-    <link rel="icon" type="image/png" href="imagenes/favicon.png" />
+<div class="detalle_pelicula">
 
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/app.css">
+    {% if respuesta['backdrop_path']  %}
+        {% set fondo = respuesta['backdrop_path'] %}
+    {% else %}
+        {% set fondo = respuesta['poster_path'] %}
+    {% endif %}
 
-</head>
-<body>
+    <div class="detalle_pelicula_fondo" id="detalle_pelicula_fondo" style="background-image: url(https://image.tmdb.org/t/p/original/{{fondo}});"></div>
 
-    <div class="header">
-        <a href="index.html">
-            <div class="logo-block">
-                <img src="imagenes/logo-blanco.png" alt="" width="44" height="42">
-                <h3 class="neonText animated">CineFilmToday</h3>
+    <div class="detalle_pelicula_imagen coleccion">
+        <img id="poster" class="pelicula_poster_grande" src="https://image.tmdb.org/t/p/w500/{{poster}}.jpg" alt="">
+    </div>
+
+    <div class="detalle_pelicula_texto">
+        <h2 id="titulo" style="margin:0;color:white">{{respuesta['name']}}</h2>
+        <br>
+        <p id="sinopsis" style="font-size:.9rem;margin-top:.5rem">{{respuesta['overview']}}</p>
+
+    </div>
+
+</div>
+
+
+<div class="peliculas_listado" id="listado">
+    <!-- ACA VA LA LISTA DE PELICULAS -->
+      
+    {% for pelicula in respuesta['parts'] %}
+        <!-- Calculamos el porcentaje de calificación de la película y lo mostramos con una barra circular --> 
+        {% set porcentaje = (pelicula['vote_average'] * 10) | int %}
+        {% if porcentaje >= 70 %}
+            {% set color = '#23cf23' %}
+        {% elif porcentaje >= 40 %}
+            {% set color = 'orange' %}
+        {% elif porcentaje > 0 %}
+            {% set color = 'red' %}
+        {% else %}
+            {% set color = '#333' %}
+        {% endif %}
+
+        <a class="pelicula_caja" href="/detalle?id={{pelicula['id']}}&amp;path={{pelicula['poster_path'].replace('/', '').replace('.jpg', '')}}">
+            <img class="pelicula_poster" src="https://image.tmdb.org/t/p/w300/{{pelicula['poster_path']}}" alt="" loading="lazy">
+            <p class="pelicula_titulo">{{pelicula['original_title']}}</p>
+            <div class="small-percent-container">
+                <div class="percent-container" id="circular">
+                    <div class="percent-box" id="percent-box" style="--i:{{porcentaje}}%; --clr:{{color}}">
+                        <div class="circle small">
+                            <span id="percent-text">{{porcentaje}}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </a>
-        <i id="mainmenu" class="menu ri-menu-5-line"></i>
-    </div>
+    {% endfor %}
+
+</div>
 
 
-    <!-- MENU HAMBURGUESA -->
-    <div class="menu-container">
-        <img src="imagenes/logo.png" alt="" width="120">
-        <h3 class="neonText">CineFilmToday</h3>
-        <hr>
-        <ul>
-            <li>
-                <a href="index.html">INICIO</a>
-            </li>
-            <li>
-                <a href="contacto.html">CONTACTO</a>
-            </li>
-        </ul>
-    </div>
+
+<!-- JAVASCRIPT -->
+
+<script>
+    const res = {{ respuesta | tojson | safe }}
+    // Conseguimos los parámetros de la query (en la url)
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const params = Object.fromEntries(urlSearchParams.entries());
+
+    // Creamos el observer para la animacion de caratulas
+    const cards = document.querySelectorAll(".pelicula_caja");
+    const observer = new IntersectionObserver(cards => {
+        cards.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.toggle("loaded", entry.isIntersecting)
+                observer.unobserve(entry.target)
+            }
+        })
+    });
     
-    <!-- SOMBRA PARA MENU HAMBURGUESA -->
-    <div class="menu-container-shadow"></div>
-
-    <section class="main-section">
-
-        <div class="detalle_pelicula">
-
-            <div class="detalle_pelicula_fondo" id="detalle_pelicula_fondo"></div>
-
-            <div class="detalle_pelicula_imagen coleccion">
-                <img id="poster" class="pelicula_poster_grande" src="" alt="">
-
-            </div>
-
-            <div class="detalle_pelicula_texto">
-                <h2 id="titulo" style="margin:0;color:white"></h2>
-                <br>
-                <p id="sinopsis" style="font-size:.9rem;margin-top:.5rem"></p>
-
-            </div>
-
-        </div>
-
-
-        <div class="peliculas_listado" id="listado">
-            <!-- ACA VA LA LISTA DE PELICULAS - SE CARGAN CON JAVASCRIPT -->
-                
-        </div>
-
-    </section>
+    // Agregamos cada peli al observer para generar la animacion
+    cards.forEach( card => {
+        card.style.transitionDelay = (card.getBoundingClientRect().left) + 'ms'
+        observer.observe(card);
+    });
     
+</script>
 
-    <!-- Footer -->
-    <div class="footer">
-        Created by team 14. CaC 23523, python full stack. All rights reserved.2023
-    </div>
-
-
-
-    <!-- JAVASCRIPT -->
-    
-    <script src="assets/app.js"></script>
-    <script src="assets/api.js"></script>
-    
-    <script>
-        // Conseguimos los parámetros de la query (en la url)
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        const params = Object.fromEntries(urlSearchParams.entries());
-
-        // Parametros para generar la lista de peliculas
-        const listado = document.getElementById('listado');
-
-        // Creamos el observer para la animacion de caratulas
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.toggle("loaded", entry.isIntersecting)
-                    observer.unobserve(entry.target)
-                }
-            })
-        });
-
-
-        cargarColeccionPeliculas(params.id).then( function(res) {
-            generarColeccionPeliculas(res, listado);
-        });
-        
-    </script>
-
-</body>
-</html>
+{% endblock %}

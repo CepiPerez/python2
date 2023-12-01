@@ -12,6 +12,17 @@ body {
     min-height: calc(100dvh - 98px - 25px);
 }
 
+.form-login {
+    display: flex;
+    justify-content: center;
+}
+
+.form-title {
+    color: white;
+    font-size: 1.25rem;
+    margin: .25rem 0 1.25rem;
+}
+
 /* Estilos para el logo */
 .neonText {
     color: #fff;
@@ -55,7 +66,7 @@ body {
 .header {
     display: flex;
     width: auto;
-    background-image: url(../imagenes/cine.jpg);
+    background-image: url(../assets/cine.jpg);
     background-position: right center;
     background-repeat: no-repeat;
     background-size: 100%;
@@ -228,6 +239,13 @@ a {
     opacity: 1;
 }
 
+.btn-logout {
+    margin: 0 1rem;
+    color: #ee6565;
+}
+.btn-logout:hover {
+    color: #f08080;
+}
 
 /* Barra de navegacion nueva */
 .tab-container {
@@ -642,7 +660,7 @@ input[id="radio-4"]:checked ~ .glider {
 
 .percent-box .circle.small span{
     font-size: 10px;
-    top: 8px;
+    top: 10px;
     width: 30px;
     left: 0;
 }
@@ -664,7 +682,7 @@ input[id="radio-4"]:checked ~ .glider {
     text-align: center;
     font-size: .9rem;
     color: lightsteelblue;
-    top: 13px;
+    top: 15px;
     width: 46px;
 }
 
@@ -692,7 +710,7 @@ input[id="radio-4"]:checked ~ .glider {
     border-radius: .5rem;
 }
 
-input[type=text], select, textarea {
+input[type=text], input[type=password], select, textarea {
     width: 100%;
     padding: .35rem;
     border: 1px solid #ccc;
@@ -703,7 +721,7 @@ input[type=text], select, textarea {
     resize: vertical;
 }
   
-input[type=button] {
+.button {
     background-color: #04AA6D;
     color: white;
     padding: .35rem 1.5rem;
@@ -716,7 +734,125 @@ input[type=submit]:hover {
     background-color: #0ad88c;
 }
 
-input[type=text].error, select.error, textarea.error {
+input[type=text].error, input[type=password].error, select.error, textarea.error {
    border-color: #df3535;
    border-width: 2px;
+}
+
+.form-container .mensaje {
+    color: lightcoral;
+    margin: .5rem 0 1rem;
+}
+
+.pagination {
+    display: flex;
+    margin: auto;
+    width: fit-content;
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+.pagination li {
+    position: relative;
+    display: block;
+    padding: 0.25rem 0.75rem .45rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    border: 1px solid darkslategray;
+}
+
+.pagination li:first-child {
+    border-top-left-radius: .5rem;
+    border-bottom-left-radius: .5rem;
+}
+
+.pagination li:last-child {
+    border-top-right-radius: .5rem;
+    border-bottom-right-radius: .5rem;
+}
+
+.pagination li a {
+    color: slategray;
+    font-size: .75rem;
+}
+
+.pagination li a:hover:not(.disabled) {
+    color: #a1b5c9;
+}
+
+.pagination li a.disabled {
+    pointer-events: none;
+    color: darkslategrey;
+}
+
+.buscador_container {
+    display: block;
+    margin: auto;
+    width: 600px;
+    max-width: 80%;
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+mi-buscador {
+    position: relative;
+    display: inherit;
+}
+mi-buscador input {
+    width: 100%;
+    border: 1px solid darkslategray;
+    border-radius: .75rem;
+    padding: .5rem 0 .5rem 1rem;
+}
+mi-buscador a:hover {
+    text-decoration: none;
+}
+mi-buscador a.disabled {
+    text-decoration: none;
+    pointer-events: none;
+    cursor: default;
+    color: #aaa;
+}
+mi-buscador a {
+    color: #777;
+}
+mi-buscador .fa-search:hover {
+    color: #009fcf;
+}
+mi-buscador .fa-times-circle:hover {
+    color: #ff4561;
+}
+mi-buscador {
+    width: 100%;
+}
+mi-buscador .fa-search {
+    position: absolute;
+    top: 0;
+    right: -10px;
+    width: 32px;
+    height: 100%;
+    cursor: pointer;
+    text-align: center;
+    padding-top: 9px;
+}
+mi-buscador .fa-times-circle {
+    position: absolute;
+    top: 0;
+    right: 32px;
+    width: 32px;
+    height: 100%;
+    cursor: pointer;
+    text-align: center;
+    padding-top: 9px;
+}
+mi-buscador .separator {
+    position:absolute;
+    top: -8px;
+    right: 26px;
+    cursor: none;
+    color: #aaa;
+    pointer-events: none;
+}
+mi-buscador .invisible {
+    display: none;
 }
