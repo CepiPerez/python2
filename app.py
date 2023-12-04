@@ -1,7 +1,7 @@
 #import os
 #import time
 import requests
-from flask import Flask, request, jsonify, render_template, redirect, url_for, session
+from flask import Flask, request, session, render_template, redirect, url_for
 from flask_cors import CORS
 #from werkzeug.utils import secure_filename
 from conector import Conector
@@ -25,8 +25,7 @@ app.jinja_env.add_extension('jinja2.ext.do')
 CORS(app)  # Esto habilitará CORS para todas las rutas
 
 # Carpeta para guardar las imagenes.
-RUTA_DESTINO = '/static/imagenes/'
-
+#RUTA_DESTINO = '/static/imagenes/'
 
 
 #-------------------------------------------------------------------------------
@@ -122,6 +121,51 @@ def register():
     return render_template('registro.html', mensaje=error, nombre=nombre, email=email, password=password, password2=password2)
 
 
+
+#-------------------------------------------------------------------------------
+# Pagina de favoritos
+#-------------------------------------------------------------------------------
+@app.route("/favoritos", methods=["GET"])
+def favoritos():
+    id = session.get('id')
+    usuario = session.get('nombre')
+    resultado = usuarios.cargar_favoritos(id)
+    return render_template("favoritos.html", usuario=usuario, resultado=resultado)
+
+
+
+#-------------------------------------------------------------------------------
+# Agregar a favoritos
+#-------------------------------------------------------------------------------
+@app.route("/api/agregar_favorito", methods=["GET"])
+def agregar_favorito():
+    usuario = session.get('id')
+    pelicula = request.args.get('id')
+    nombre = request.args.get('nombre')
+    imagen = request.args.get('imagen')
+    calificacion = request.args.get('calificacion')
+
+    if usuarios.agregar_favoritos(usuario, pelicula, nombre, imagen, calificacion):
+        return {'tipo':'agregar', 'status':'ok'}
+
+    return {'tipo':'agregar', 'status':'error'}
+
+
+
+#-------------------------------------------------------------------------------
+# Quitar de favoritos
+#-------------------------------------------------------------------------------
+@app.route("/api/quitar_favorito", methods=["GET"])
+def quitar_favorito():
+    usuario = session.get('id')
+    pelicula = request.args.get('id')
+    
+    if usuarios.quitar_favoritos(usuario, pelicula):
+        return {'tipo':'quitar', 'status':'ok'}
+
+    return {'tipo':'quitar', 'status':'error'}
+
+
 #-------------------------------------------------------------------------------
 # Detalle de película
 #-------------------------------------------------------------------------------
@@ -181,6 +225,11 @@ def api_detalle_pelicula(id):
     respuesta["detalle"] = requests.get(f"https://api.themoviedb.org/3/movie/{id}?language=es-AR", headers=api_headers).json()
     respuesta["videos"] = requests.get(f"https://api.themoviedb.org/3/movie/{id}/videos?language=es-AR", headers=api_headers).json()["results"]
     respuesta["reparto"] = requests.get(f"https://api.themoviedb.org/3/movie/{id}/credits?language=es-AR", headers=api_headers).json()
+    usuario_id = session.get('id')
+    if id:
+        respuesta["favorito"] = usuarios.es_favorito(usuario_id, id)
+    else:
+        respuesta["favorito"] = False
     return respuesta
 
 
@@ -191,6 +240,8 @@ def api_detalle_pelicula(id):
 def api_detalle_coleccion(id):
     respuesta = requests.get(f"https://api.themoviedb.org/3/collection/{id}", headers=api_headers)
     return respuesta.json()
+
+
 
 
 #-------------------------------------------------------------------------------

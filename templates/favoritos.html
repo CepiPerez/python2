@@ -1,0 +1,69 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+
+<div class="peliculas_listado" id="listado">
+    <!-- ACA VA LA LISTA DE PELICULAS - SE CARGAN CON UN FOR -->
+    {% for pelicula in resultado %}
+
+        <!-- Calculamos el porcentaje de calificación de la película y lo mostramos con una barra circular --> 
+        {% if pelicula['pelicula_calificacion'] >= 70 %}
+            {% set color = '#23cf23' %}
+        {% elif pelicula['pelicula_calificacion'] >= 40 %}
+            {% set color = 'orange' %}
+        {% elif pelicula['pelicula_calificacion'] > 0 %}
+            {% set color = 'red' %}
+        {% else %}
+            {% set color = '#333' %}
+        {% endif %}
+
+        <a class="pelicula_caja" href="/detalle?id={{pelicula['pelicula_id']}}&amp;path={{pelicula['pelicula_imagen'].replace('/', '').replace('.jpg', '')}}">
+            <img class="pelicula_poster" src="https://image.tmdb.org/t/p/w300/{{pelicula['pelicula_imagen']}}.jpg" alt="" loading="lazy">
+            <p class="pelicula_titulo">{{pelicula['pelicula_nombre']}}</p>
+            <div class="small-percent-container">
+                <div class="percent-container" id="circular">
+                    <div class="percent-box" id="percent-box" style="--i:{{pelicula['pelicula_calificacion']}}%; --clr:{{color}}">
+                        <div class="circle small">
+                            <span id="percent-text">{{pelicula['pelicula_calificacion']}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+
+</div>
+
+
+<script>
+    // Parametro para ver cual es el boton activo del menu
+    const botonera = document.querySelectorAll('.tab-container .tab');
+
+    // Parametros para generar la lista de peliculas
+    const paginador = document.getElementById('paginator');
+
+    // Creamos el observer para la animacion de caratulas
+    const cards = document.querySelectorAll(".pelicula_caja");
+    const observer = new IntersectionObserver(cards => {
+        cards.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.toggle("loaded", entry.isIntersecting)
+                observer.unobserve(entry.target)
+            }
+        })
+    });
+
+    cards.forEach( card => {
+        card.style.transitionDelay = (card.getBoundingClientRect().left / 2) + 'ms'
+        observer.observe(card);
+    });
+
+
+    function cambiarListado(seccion) {
+        window.location.href = "/" + seccion;
+    }
+
+    
+</script>
+
+{% endblock %}

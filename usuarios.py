@@ -50,6 +50,36 @@ class Usuarios:
             return self.login(email, password)
 
 
+    def es_favorito(self, usuario, pelicula):
+        self.cursor.execute(f"SELECT * FROM favoritos WHERE usuario_id = {usuario} and pelicula_id = '{pelicula}'")
+        resultado = self.cursor.fetchone()
+        if resultado:
+            return True
+        return False
+
+
+    def cargar_favoritos(self, usuario):
+        self.cursor.execute(f"SELECT * FROM favoritos WHERE usuario_id = {usuario}")
+        return self.cursor.fetchall()
+    
+
+    def agregar_favoritos(self, usuario, pelicula, nombre, imagen, calificacion):
+        sql = f"INSERT INTO favoritos (usuario_id, pelicula_id, pelicula_nombre, pelicula_imagen, pelicula_calificacion) VALUES (%s, %s, %s, %s, %s)"
+        valores = (usuario, pelicula, nombre, imagen, calificacion)
+        
+        self.cursor.execute(sql, valores)        
+        self.conn.commit()
+
+        return True
+    
+
+    def quitar_favoritos(self, usuario, pelicula):
+        self.cursor.execute(f"DELETE FROM favoritos WHERE usuario_id = {usuario} and pelicula_id = {pelicula}")
+        self.conn.commit()
+
+        return True
+
+
     #----------------------------------------------------------------
     def agregar_producto(self, codigo, descripcion, cantidad, precio, imagen, proveedor):
         # Verificamos si ya existe un producto con el mismo código

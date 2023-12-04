@@ -31,15 +31,27 @@
             {% if usuario %}
                 <li>
                     <span>{{ usuario }}</span>
-                    <a class="btn-logout fa fa-times-circle-o" aria-hidden="true" href="{{ url_for('logout') }}"></a>
+                    <a class="btn-logout ri-close-circle-line" aria-hidden="true" href="{{ url_for('logout') }}"></a>
+                </li>
+                <br>
+            {% else %}
+                <li>
+                    <a class="" aria-hidden="true" href="{{ url_for('login') }}">INGRESAR</a>
                 </li>
                 <br>
             {% endif %}
             <li>
-                <a href="/">INICIO</a>
+                <a href="{{ url_for('index') }}">INICIO</a>
             </li>
+
+            {% if usuario %}
+                <li>
+                    <a href="{{ url_for('favoritos') }}">FAVORITOS</a>
+                </li>
+            {% endif %}
+
             <li>
-                <a href="/contacto">CONTACTO</a>
+                <a href="{{ url_for('contacto') }}">CONTACTO</a>
             </li>
         </ul>
     </div>
@@ -48,7 +60,6 @@
     <div class="menu-container-shadow"></div>
 
     <script src="{{ url_for('static', filename='assets/app.js') }}"></script>
-    <script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
 
 
     <section class="main-section">

@@ -138,6 +138,23 @@
         </div>
         {% endif %}
 
+        {% if usuario %}
+        <div style="margin-top:2rem">
+            {% if respuesta['favorito'] %}
+                <span id="texto_favorito" onclick="cambiarFavorito()" >
+                    <i id="btn_favorito" class="ri-heart-fill" style="color:#ee6565"></i>
+                    Quitar de favoritos
+                </span>
+            {% else %}
+                <span id="texto_favorito" onclick="cambiarFavorito()">
+                    <i id="btn_favorito" class="ri-heart-line" style="color:#ee6565"></i>
+                    Agregar a favoritos
+                </span>
+            {% endif %}
+        </div>
+        {% endif %}
+
+
     </div>
 
 </div>
@@ -233,13 +250,22 @@ para que se pueda acceder a la misma -->
     </p>
     <div id="estudios" class="estudios">     
         {% for productora in respuesta['detalle']['production_companies'] %}
-            <img src="https://image.tmdb.org/t/p/w200/{{productora['logo_path']}}">
+            {% if productora['logo_path'] %}
+                <img src="https://image.tmdb.org/t/p/w200/{{productora['logo_path']}}">
+            {% endif %}
         {% endfor %}
     </div>
 {% endif %}
 
 
 <script>
+    var es_favorito = {% if respuesta['favorito'] %} true {% else %} false {% endif %};
+    const pelicula_id = "{{respuesta['detalle']['id']}}";
+    const pelicula_calificacion = "{{porcentaje}}";
+    const pelicula_imagen = "{{poster}}";
+    const pelicula_nombre = "{{respuesta['detalle']['original_title']}}";
+
+
     // Redimensionamos el video (trailer)
     var w = window.innerWidth;
     w = w > 650 ? 650 : w;
@@ -248,6 +274,41 @@ para que se pueda acceder a la misma -->
     var videoframe = document.getElementById('video_trailer');
     videoframe.setAttribute('height', h);
     videoframe.setAttribute('width', w);
+
+    function cambiarFavorito() {
+        if (es_favorito) quitarFavorito()
+        else agregarFavorito()
+    }
+
+    function agregarFavorito() {
+        fetch('/api/agregar_favorito?id=' + pelicula_id + '&nombre=' + pelicula_nombre + '&calificacion=' + pelicula_calificacion + '&imagen=' + pelicula_imagen)
+            .then(response => response.json())
+            .then(response => procesarRespuesta(response))
+            .catch(err => console.error(err));
+    }
+
+    function quitarFavorito() {
+        fetch('/api/quitar_favorito?id=' + pelicula_id)
+            .then(response => response.json())
+            .then(response => procesarRespuesta(response))
+            .catch(err => console.error(err));
+    }
+
+    function procesarRespuesta(response) {
+        if (response.status=='ok') {
+            text = document.querySelector('#texto_favorito');
+
+            if (response.tipo=='agregar') {
+                es_favorito = true;
+                text.innerHTML = '<i id="btn_favorito" class="ri-heart-fill" style="color:#ee6565"></i> Quitar de favoritos';
+            } else {
+                es_favorito = false;
+                text.innerHTML = '<i id="btn_favorito" class="ri-heart-line" style="color:#ee6565"></i> Agregar a favoritos';
+            }
+        }
+    }
+
+
 </script>
 
 {% endblock %}

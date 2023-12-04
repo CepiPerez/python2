@@ -56,15 +56,15 @@
         {% endif %}
 
         {% if pelicula['poster_path'] %}
-            {% set poster = 'https://image.tmdb.org/t/p/w300/' + pelicula['poster_path'] %}
+            {% set poster = pelicula['poster_path'] %}
         {% elif pelicula['backdrop_path'] %}
-            {% set poster = 'https://image.tmdb.org/t/p/w300/' + pelicula['backdrop_path'] %}
+            {% set poster = pelicula['backdrop_path'] %}
         {% else %}
             {% set poster = url_for('static', filename='assets/caratula.jpg') %}
         {% endif %}
 
         <a class="pelicula_caja" href="/detalle?id={{pelicula['id']}}&amp;path={{poster.replace('/', '').replace('.jpg', '')}}">
-            <img class="pelicula_poster" src="{{poster}}" alt="" loading="lazy">
+            <img class="pelicula_poster" src="https://image.tmdb.org/t/p/w300/{{poster}}" alt="" loading="lazy">
             <p class="pelicula_titulo">{{pelicula['original_title']}}</p>
             <div class="small-percent-container">
                 <div class="percent-container" id="circular">

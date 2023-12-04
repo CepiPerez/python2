@@ -147,8 +147,12 @@ body {
 }
 
 .menu-container a {
-    color: white;
+    color: lightgray;
     font-size: .95rem;
+    transition: all .3s;
+}
+.menu-container a:hover {
+    color: white;
 }
 
 .menu-container hr {
@@ -241,10 +245,11 @@ a {
 
 .btn-logout {
     margin: 0 1rem;
-    color: #ee6565;
+    color: #ee6565 !important;
+    margin-right: 0;
 }
 .btn-logout:hover {
-    color: #f08080;
+    color: #f08080 !important;
 }
 
 /* Barra de navegacion nueva */

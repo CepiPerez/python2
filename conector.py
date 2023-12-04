@@ -28,3 +28,12 @@ class Conector:
             nombre VARCHAR(100) NOT NULL, \
             password VARCHAR(50) NOT NULL \
         )")
+
+        self.cursor.execute(f"CREATE TABLE IF NOT EXISTS favoritos ( \
+            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, \
+            usuario_id INT NOT NULL, \
+            pelicula_id VARCHAR(50) NOT NULL, \
+            pelicula_nombre VARCHAR(100) NOT NULL, \
+            pelicula_calificacion INT NOT NULL, \
+            pelicula_imagen VARCHAR(100) NOT NULL \
+        )")
