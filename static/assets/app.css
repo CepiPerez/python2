@@ -23,6 +23,16 @@ body {
     margin: .25rem 0 1.25rem;
 }
 
+.register-text {
+    color: darkslategray;
+    margin-left: 1rem;
+}
+
+.register-text:hover {
+    color: slategray;
+}
+
+
 /* Estilos para el logo */
 .neonText {
     color: #fff;

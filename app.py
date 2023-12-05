@@ -227,7 +227,7 @@ def api_detalle_pelicula(id):
     respuesta["videos"] = requests.get(f"https://api.themoviedb.org/3/movie/{id}/videos?language=es-AR", headers=api_headers).json()["results"]
     respuesta["reparto"] = requests.get(f"https://api.themoviedb.org/3/movie/{id}/credits?language=es-AR", headers=api_headers).json()
     usuario_id = session.get('id')
-    if id:
+    if usuario_id:
         respuesta["favorito"] = usuarios.es_favorito(usuario_id, id)
     else:
         respuesta["favorito"] = False
