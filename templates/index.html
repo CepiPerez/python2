@@ -2,6 +2,7 @@
 {% block content %}
 
 <!-- BOTONERA NUEVA -->
+{% if not buscar %}
 <div class="tab-container">
     <div class="tabs">
         <input type="radio" id="radio-1" onclick="cambiarListado('now_playing')" />
@@ -29,6 +30,7 @@
 
     </script>
 </div>
+{% endif %}
 
 <div class="buscador_container">
     <form action="{{ url_for('buscar') }}" method="GET" id="form_buscar">
@@ -36,7 +38,6 @@
         <!-- El cuadro de texto de busqueda se genera con javascript-->
       </mi-buscador>
 </div>
-
 
 
 <div class="peliculas_listado" id="listado">
@@ -56,15 +57,18 @@
         {% endif %}
 
         {% if pelicula['poster_path'] %}
-            {% set poster = pelicula['poster_path'] %}
+            {% set poster = 'https://image.tmdb.org/t/p/w300/' + pelicula['poster_path'] %}
+            {% set path = pelicula['poster_path'].replace('/', '').replace('.jpg', '') %}
         {% elif pelicula['backdrop_path'] %}
-            {% set poster = pelicula['backdrop_path'] %}
+            {% set poster = 'https://image.tmdb.org/t/p/w300/' + pelicula['backdrop_path'] %}
+            {% set path = pelicula['backdrop_path'].replace('/', '').replace('.jpg', '') %}
         {% else %}
             {% set poster = url_for('static', filename='assets/caratula.jpg') %}
+            {% set path = 'caratula' %}
         {% endif %}
 
-        <a class="pelicula_caja" href="/detalle?id={{pelicula['id']}}&amp;path={{poster.replace('/', '').replace('.jpg', '')}}">
-            <img class="pelicula_poster" src="https://image.tmdb.org/t/p/w300/{{poster}}" alt="" loading="lazy">
+        <a class="pelicula_caja" href="/detalle?id={{pelicula['id']}}&amp;path={{path}}">
+            <div class="pelicula_poster" style="background-image: url({{poster}})" alt="" loading="lazy"></div>
             <p class="pelicula_titulo">{{pelicula['original_title']}}</p>
             <div class="small-percent-container">
                 <div class="percent-container" id="circular">

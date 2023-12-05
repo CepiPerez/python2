@@ -7,8 +7,9 @@ from flask_cors import CORS
 from conector import Conector
 from usuarios import Usuarios
 
-
+# codoacodo2023
 conexion = Conector(host='127.0.0.1', user='root', password='root', database='miapp')
+#conexion = Conector(host='CepiPerez.mysql.pythonanywhere-services.com', user='CepiPerez', password='codoacodo2023', database='CepiPerez$codoacodo')
 usuarios = Usuarios(conexion)
 
 api_headers = {

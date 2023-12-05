@@ -421,6 +421,8 @@ input[id="radio-4"]:checked ~ .glider {
     border-radius: .5rem;
     margin: 0 1rem;
     background-color: gray;
+    background-size: cover;
+    background-position: center;
     opacity: .7;
     transition: all .6s ease;
 }
@@ -807,6 +809,7 @@ input[type=text].error, input[type=password].error, select.error, textarea.error
 .buscador_container {
     display: block;
     margin: auto;
+    margin-top: 2rem;
     width: 600px;
     max-width: 80%;
     padding: 0;
@@ -835,16 +838,16 @@ mi-buscador a.disabled {
 mi-buscador a {
     color: #777;
 }
-mi-buscador .fa-search:hover {
+mi-buscador .search:hover {
     color: #009fcf;
 }
-mi-buscador .fa-times-circle:hover {
+mi-buscador .clear:hover {
     color: #ff4561;
 }
 mi-buscador {
     width: 100%;
 }
-mi-buscador .fa-search {
+mi-buscador .search {
     position: absolute;
     top: 0;
     right: -10px;
@@ -854,7 +857,7 @@ mi-buscador .fa-search {
     text-align: center;
     padding-top: 9px;
 }
-mi-buscador .fa-times-circle {
+mi-buscador .clear {
     position: absolute;
     top: 0;
     right: 32px;

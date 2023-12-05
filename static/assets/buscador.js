@@ -34,8 +34,8 @@ class Buscador extends HTMLElement
         this.appendChild(inputtext);
     
         var limpiar = document.createElement('a');
-        limpiar.classList.add("fa");
-        limpiar.classList.add("fa-times-circle");
+        limpiar.classList.add("ri-close-circle-line");
+        limpiar.classList.add("clear");
         limpiar.classList.add("invisible");
         limpiar.setAttribute("id", "limpiar");
         limpiar.setAttribute("href", "");
@@ -48,8 +48,8 @@ class Buscador extends HTMLElement
         this.appendChild(separador);
     
         var buscar = document.createElement('a');
-        buscar.classList.add("fa");
-        buscar.classList.add("fa-search");
+        buscar.classList.add("ri-search-line");
+        buscar.classList.add("search");
         buscar.classList.add("disabled");
         buscar.setAttribute("id", "buscar");
         buscar.setAttribute("href", "");

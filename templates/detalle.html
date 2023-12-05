@@ -13,8 +13,11 @@
 
 
     <div class="detalle_pelicula_imagen">
-        <img id="poster" class="pelicula_poster_grande" src="https://image.tmdb.org/t/p/w500/{{poster}}.jpg" alt="">
-
+        {% if poster=='caratula' %}
+            <img id="poster" class="pelicula_poster_grande" src="{{url_for('static', filename='assets/caratula.jpg')}}" alt="">
+        {% else %}
+            <img id="poster" class="pelicula_poster_grande" src="https://image.tmdb.org/t/p/w500/{{poster}}.jpg" alt="">
+        {% endif %}
     </div>
 
     <div class="detalle_pelicula_texto">

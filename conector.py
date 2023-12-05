@@ -13,7 +13,7 @@ class Conector:
 
         # Intentamos seleccionar la base de datos
         try:
-            self.cursor.execute("USE miapp")
+            self.cursor.execute(f"USE {database}")
         except mysql.connector.Error as err:
             # Si la base de datos no existe, la creamos
             if err.errno == mysql.connector.errorcode.ER_BAD_DB_ERROR:

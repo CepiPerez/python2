@@ -48,7 +48,6 @@ class Usuarios:
 
 
     def es_favorito(self, usuario, pelicula):
-        print(f"SELECT * FROM favoritos WHERE usuario_id = {usuario} and pelicula_id = '{pelicula}'")
         resultado = self.conexion.get_one(f"SELECT * FROM favoritos WHERE usuario_id = {usuario} and pelicula_id = '{pelicula}'")
         if resultado:
             return True
@@ -56,7 +55,7 @@ class Usuarios:
 
 
     def cargar_favoritos(self, usuario):
-        return self.conexion.get_all(f"SELECT * FROM favoritos WHERE usuario_id = {usuario}")
+        return self.conexion.get_all(f"SELECT * FROM favoritos WHERE usuario_id = {usuario} ORDER BY pelicula_id")
     
 
     def agregar_favoritos(self, usuario, pelicula, nombre, imagen, calificacion):
