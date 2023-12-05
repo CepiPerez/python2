@@ -37,3 +37,23 @@ class Conector:
             pelicula_calificacion INT NOT NULL, \
             pelicula_imagen VARCHAR(100) NOT NULL \
         )")
+
+
+    def get_one(self, query):
+        self.cursor.execute(query)
+        return self.cursor.fetchone()
+
+
+    def get_all(self, query):
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
+
+
+    def run_query(self, query, valores = None):
+        if valores:
+            self.cursor.execute(query, valores)
+        else:
+            self.cursor.execute(query)
+        
+        self.conn.commit()
+        return self.cursor.rowcount > 0

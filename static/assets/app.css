@@ -252,6 +252,20 @@ a {
     color: #f08080 !important;
 }
 
+.fav-button {
+    margin-top: 2rem;
+    cursor: pointer;
+    color: white;
+    width: fit-content;
+    transition: all .3s;
+    opacity: .7;
+}
+.fav-button:hover {
+    opacity: 1;
+}
+
+
+
 /* Barra de navegacion nueva */
 .tab-container {
 	margin: 1rem 0;

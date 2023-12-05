@@ -3,14 +3,12 @@ from flask import session
 
 class Usuarios:
 
-    def __init__(self, conector):
-        self.cursor = conector.cursor
-        self.conn = conector.conn
+    def __init__(self, conexion):
+        self.conexion = conexion
 
 
     def get_user(self, email):
-        self.cursor.execute(f"SELECT * FROM usuarios WHERE email = '{email}'")
-        return self.cursor.fetchone()
+        return self.conexion.get_one(f"SELECT * FROM usuarios WHERE email = '{email}'")
 
 
     def login(self, email, password):
@@ -43,98 +41,30 @@ class Usuarios:
             sql = "INSERT INTO usuarios (email, nombre, password) VALUES (%s, %s, %s)"
             valores = (email, nombre, password)
 
-            self.cursor.execute(sql, valores)        
-            self.conn.commit()
-
-            # Si se registró correctamente hacemos el login 
-            return self.login(email, password)
+            if self.conexion.run_query(sql, valores):
+                return self.login(email, password)
+            
+            return False
 
 
     def es_favorito(self, usuario, pelicula):
-        self.cursor.execute(f"SELECT * FROM favoritos WHERE usuario_id = {usuario} and pelicula_id = '{pelicula}'")
-        resultado = self.cursor.fetchone()
+        print(f"SELECT * FROM favoritos WHERE usuario_id = {usuario} and pelicula_id = '{pelicula}'")
+        resultado = self.conexion.get_one(f"SELECT * FROM favoritos WHERE usuario_id = {usuario} and pelicula_id = '{pelicula}'")
         if resultado:
             return True
         return False
 
 
     def cargar_favoritos(self, usuario):
-        self.cursor.execute(f"SELECT * FROM favoritos WHERE usuario_id = {usuario}")
-        return self.cursor.fetchall()
+        return self.conexion.get_all(f"SELECT * FROM favoritos WHERE usuario_id = {usuario}")
     
 
     def agregar_favoritos(self, usuario, pelicula, nombre, imagen, calificacion):
         sql = f"INSERT INTO favoritos (usuario_id, pelicula_id, pelicula_nombre, pelicula_imagen, pelicula_calificacion) VALUES (%s, %s, %s, %s, %s)"
         valores = (usuario, pelicula, nombre, imagen, calificacion)
-        
-        self.cursor.execute(sql, valores)        
-        self.conn.commit()
-
-        return True
+        return self.conexion.run_query(sql, valores)
     
 
     def quitar_favoritos(self, usuario, pelicula):
-        self.cursor.execute(f"DELETE FROM favoritos WHERE usuario_id = {usuario} and pelicula_id = {pelicula}")
-        self.conn.commit()
-
-        return True
-
-
-    #----------------------------------------------------------------
-    def agregar_producto(self, codigo, descripcion, cantidad, precio, imagen, proveedor):
-        # Verificamos si ya existe un producto con el mismo código
-        self.cursor.execute(f"SELECT * FROM productos WHERE codigo = {codigo}")
-        producto_existe = self.cursor.fetchone()
-        if producto_existe:
-            return False
-
-        
-        sql = "INSERT INTO productos (codigo, descripcion, cantidad, precio, imagen_url, proveedor) VALUES (%s, %s, %s, %s, %s, %s)"
-        valores = (codigo, descripcion, cantidad, precio, imagen, proveedor)
-
-        self.cursor.execute(sql, valores)        
-        self.conn.commit()
-        return True
-
-    #----------------------------------------------------------------
-    def consultar_producto(self, codigo):
-        # Consultamos un producto a partir de su código
-        self.cursor.execute(f"SELECT * FROM productos WHERE codigo = {codigo}")
-        return self.cursor.fetchone()
-
-    #----------------------------------------------------------------
-    def modificar_producto(self, codigo, nueva_descripcion, nueva_cantidad, nuevo_precio, nueva_imagen, nuevo_proveedor):
-        sql = "UPDATE productos SET descripcion = %s, cantidad = %s, precio = %s, imagen_url = %s, proveedor = %s WHERE codigo = %s"
-        valores = (nueva_descripcion, nueva_cantidad, nuevo_precio, nueva_imagen, nuevo_proveedor, codigo)
-        self.cursor.execute(sql, valores)
-        self.conn.commit()
-        return self.cursor.rowcount > 0
-
-    #----------------------------------------------------------------
-    def listar_productos(self):
-        self.cursor.execute("SELECT * FROM productos")
-        productos = self.cursor.fetchall()
-        return productos
-
-    #----------------------------------------------------------------
-    def eliminar_producto(self, codigo):
-        # Eliminamos un producto de la tabla a partir de su código
-        self.cursor.execute(f"DELETE FROM productos WHERE codigo = {codigo}")
-        self.conn.commit()
-        return self.cursor.rowcount > 0
-
-    #----------------------------------------------------------------
-    def mostrar_producto(self, codigo):
-        # Mostramos los datos de un producto a partir de su código
-        producto = self.consultar_producto(codigo)
-        if producto:
-            print("-" * 40)
-            print(f"Código.....: {producto['codigo']}")
-            print(f"Descripción: {producto['descripcion']}")
-            print(f"Cantidad...: {producto['cantidad']}")
-            print(f"Precio.....: {producto['precio']}")
-            print(f"Imagen.....: {producto['imagen_url']}")
-            print(f"Proveedor..: {producto['proveedor']}")
-            print("-" * 40)
-        else:
-            print("Producto no encontrado.")
+        sql = f"DELETE FROM favoritos WHERE usuario_id = {usuario} and pelicula_id = {pelicula}"
+        return self.conexion.run_query(sql)
