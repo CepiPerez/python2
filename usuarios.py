@@ -20,6 +20,7 @@ class Usuarios:
             session['id'] = account['id']
             session['nombre'] = account['nombre']
             session['email'] = account['email']
+            session['avatar'] = account['avatar']
             return True
         else:
             return False
@@ -27,8 +28,9 @@ class Usuarios:
     
     def logout(self):
         session['loggedin'] = False
-        session.pop('id', None)
-        session.pop('nombre', None)
+        session.pop('id')
+        session.pop('nombre')
+        session.pop('email')
 
 
     def register(self, nombre, email, password):
@@ -43,6 +45,30 @@ class Usuarios:
 
             if self.conexion.run_query(sql, valores):
                 return self.login(email, password)
+            
+            return False
+        
+
+    def update(self, original, nombre, email, password, avatar):
+        account = self.get_user(original)
+       
+        # Si no existe el usuario creamos retornamos error
+        if not account:
+            return False
+        else:
+            if not password:
+                password = account['password']
+            if not avatar:
+                avatar = account['avatar']
+
+            sql = "UPDATE usuarios SET nombre = %s, email = %s, password = %s, avatar = %s WHERE email = %s"
+            valores = (nombre, email, password, avatar, original)
+
+            if self.conexion.run_query(sql, valores):
+                session['nombre'] = nombre
+                session['email'] = email
+                session['avatar'] = avatar
+                return True
             
             return False
 

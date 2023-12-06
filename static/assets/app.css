@@ -169,6 +169,34 @@ body {
     border-color: #666;
 }
 
+.menu-profile {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    align-items: center;
+}
+
+.menu-profile-buttons {
+    font-size: 1.25rem;
+}
+
+.menu-profile-buttons {
+    padding: 0.75rem 0 0 0;
+    font-size: .85rem;
+    display: flex;
+    gap: .75rem;
+}
+
+.menu-profile-buttons a {
+    font-size: .85rem;
+    color: darkgray;
+}
+
+.menu-profile-buttons a:hover {
+    color: white;
+}
+
+
 .footer {
     text-align: center;
     background-color: rgb(238, 228, 32);
@@ -737,6 +765,8 @@ input[id="radio-4"]:checked ~ .glider {
 .form-container {
     margin: 1rem;
     background-color: #333;
+    color: darkgray;
+    font-size: .9rem;
     padding: 1rem;
     border-radius: .5rem;
 }
@@ -774,6 +804,27 @@ input[type=text].error, input[type=password].error, select.error, textarea.error
     color: lightcoral;
     margin: .5rem 0 1rem;
 }
+
+.column {
+    display: flex;
+}
+
+.profile-container {
+    margin-right: 1rem;
+}
+
+.profilepic {
+    margin-top: .5rem;
+    border-radius: 1rem;
+    object-fit: cover;
+    overflow: hidden;
+}
+  
+.profilepic.edit {
+    cursor: pointer;
+}
+
+
 
 .pagination {
     display: flex;

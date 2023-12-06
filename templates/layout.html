@@ -29,10 +29,24 @@
         <hr>
         <ul>
             {% if usuario %}
-                <li>
-                    <span>{{ usuario }}</span>
-                    <a class="btn-logout ri-close-circle-line" aria-hidden="true" href="{{ url_for('logout') }}"></a>
-                </li>
+                {% if avatar %}
+                    {% set imagen_perfil = url_for('static', filename='imagenes/' + avatar) %}
+                {% else %}
+                    {% set imagen_perfil = url_for('static', filename='assets/avatar.png') %}
+                {% endif %}
+                <div class="menu-profile">
+                    <div>
+                        <img src="{{ imagen_perfil }}" alt="" height="64" width="64" class="profilepic edit" id="profilepic">
+                    </div>
+                    <div>
+                        <span class="menu-profile-title">{{ usuario }}</span>
+                        <div class="menu-profile-buttons">
+                            <a href="{{ url_for('profile') }}">PERFIL</a>
+                            <span>-</span>
+                            <a href="{{ url_for('logout') }}">SALIR</a>
+                        </div>
+                    </div>
+                </div>
                 <br>
             {% else %}
                 <li>

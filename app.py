@@ -1,13 +1,12 @@
-#import os
-#import time
+import os
+import time
 import requests
 from flask import Flask, request, session, render_template, redirect, url_for
 from flask_cors import CORS
-#from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_filename
 from conector import Conector
 from usuarios import Usuarios
 
-# codoacodo2023
 conexion = Conector(host='127.0.0.1', user='root', password='root', database='miapp')
 #conexion = Conector(host='CepiPerez.mysql.pythonanywhere-services.com', user='CepiPerez', password='codoacodo2023', database='CepiPerez$codoacodo')
 usuarios = Usuarios(conexion)
@@ -26,7 +25,7 @@ app.jinja_env.add_extension('jinja2.ext.do')
 CORS(app)  # Esto habilitará CORS para todas las rutas
 
 # Carpeta para guardar las imagenes.
-#RUTA_DESTINO = '/static/imagenes/'
+RUTA_DESTINO = './static/imagenes/'
 
 
 #-------------------------------------------------------------------------------
@@ -37,8 +36,9 @@ CORS(app)  # Esto habilitará CORS para todas las rutas
 @app.route("/<seccion>/<int:pagina>", methods=["GET"])
 def index(seccion, pagina):
     usuario = session.get('nombre')
+    avatar = session.get('avatar')
     resultado = api_peliculas(seccion, pagina)
-    return render_template("index.html", usuario=usuario, seccion=seccion, pagina=pagina, resultado=resultado)
+    return render_template("index.html", usuario=usuario, avatar=avatar, seccion=seccion, pagina=pagina, resultado=resultado)
 
 
 #-------------------------------------------------------------------------------
@@ -47,10 +47,11 @@ def index(seccion, pagina):
 @app.route("/buscar", methods=["GET"])
 def buscar():
     usuario = session.get('nombre')
+    avatar = session.get('avatar')
     buscar = request.args.get('query', '')
     pagina = request.args.get('pagina', 1)
     resultado = api_peliculas_buscar(buscar, pagina)
-    return render_template("index.html", usuario=usuario, resultado=resultado, buscar=buscar, pagina=pagina)
+    return render_template("index.html", usuario=usuario, avatar=avatar, resultado=resultado, buscar=buscar, pagina=pagina)
 
 
 #-------------------------------------------------------------------------------
@@ -58,7 +59,9 @@ def buscar():
 #-------------------------------------------------------------------------------
 @app.route("/contacto", methods=["GET"])
 def contacto():
-    return render_template("contacto.html")
+    usuario = session.get('nombre')
+    avatar = session.get('avatar')
+    return render_template("contacto.html", usuario=usuario, avatar=avatar)
 
 
 #-------------------------------------------------------------------------------
@@ -124,14 +127,67 @@ def register():
 
 
 #-------------------------------------------------------------------------------
+# Pagina de perfil de usuario
+#-------------------------------------------------------------------------------
+@app.route("/perfil", methods=["GET", "POST"])
+def profile():
+    email = session.get('email')
+    usuario = session.get('nombre')
+    avatar = session.get('avatar')
+
+    if request.method == 'GET':
+        estado = 0
+
+    elif 'email' in request.form and 'nombre' in request.form:
+        email = session.get('email')
+        nuevo_email = request.form['email']
+        nuevo_nombre = request.form['nombre']
+
+        if 'password' in request.form:
+            nuevo_password = request.form['password']
+        else:
+            nuevo_password = None
+        
+        if request.files['avatar'].filename != '':
+            imagen = request.files['avatar']
+            nombre_imagen = secure_filename(imagen.filename)
+            nombre_base, extension = os.path.splitext(nombre_imagen)
+            nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}"
+
+            imagen_vieja = session.get('avatar')
+            if imagen_vieja:
+                ruta_imagen = os.path.join(RUTA_DESTINO, imagen_vieja)
+                if os.path.exists(ruta_imagen):
+                    os.remove(ruta_imagen)
+
+        else:
+            nombre_imagen = None
+
+        if usuarios.update(email, nuevo_nombre, nuevo_email, nuevo_password, nombre_imagen):
+            if nombre_imagen:
+                imagen.save(os.path.join(RUTA_DESTINO, nombre_imagen))
+            email = session.get('email')
+            usuario = session.get('nombre')
+            avatar = session.get('avatar')
+            estado = 1
+        else:
+            estado = 2
+    else:
+        estado = 2
+
+    return render_template("perfil.html", usuario=usuario, email=email, avatar=avatar, estado=estado)
+
+
+#-------------------------------------------------------------------------------
 # Pagina de favoritos
 #-------------------------------------------------------------------------------
 @app.route("/favoritos", methods=["GET"])
 def favoritos():
     id = session.get('id')
     usuario = session.get('nombre')
+    avatar = session.get('avatar')
     resultado = usuarios.cargar_favoritos(id)
-    return render_template("favoritos.html", usuario=usuario, resultado=resultado)
+    return render_template("favoritos.html", usuario=usuario, avatar=avatar, resultado=resultado)
 
 
 
@@ -173,9 +229,10 @@ def quitar_favorito():
 @app.route("/detalle", methods=["GET"])
 def detalle_pelicula():
     usuario = session.get('nombre')
+    avatar = session.get('avatar')
     respuesta = api_detalle_pelicula(request.args.get('id'))
     poster = request.args.get('path')
-    return render_template("detalle.html", usuario=usuario, respuesta=respuesta, poster=poster)
+    return render_template("detalle.html", usuario=usuario, avatar=avatar, respuesta=respuesta, poster=poster)
 
 
 #-------------------------------------------------------------------------------
@@ -184,9 +241,10 @@ def detalle_pelicula():
 @app.route("/coleccion", methods=["GET"])
 def coleccion_peliculas():
     usuario = session.get('nombre')
+    avatar = session.get('avatar')
     respuesta = api_detalle_coleccion(request.args.get('id'))
     poster = request.args.get('path')
-    return render_template("coleccion.html", usuario=usuario, respuesta=respuesta, poster=poster)
+    return render_template("coleccion.html", usuario=usuario, avatar=avatar, respuesta=respuesta, poster=poster)
 
 
 #-------------------------------------------------------------------------------

@@ -26,7 +26,8 @@ class Conector:
             id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, \
             email VARCHAR(50) NOT NULL, \
             nombre VARCHAR(100) NOT NULL, \
-            password VARCHAR(50) NOT NULL \
+            password VARCHAR(50) NOT NULL, \
+            avatar VARCHAR(50) DEFAULT NULL \
         )")
 
         self.cursor.execute(f"CREATE TABLE IF NOT EXISTS favoritos ( \

@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="form-login">
+	<div>
+	
+		<div class="form-container" style="max-width: 600px;">
+			<h4 class="form-title">Mi perfil</h4>
+
+			<form action="{{ url_for('profile') }}" id="myForm" method="post" enctype="multipart/form-data">
+
+				{% if avatar %}
+					{% set imagen_perfil = url_for('static', filename='imagenes/' + avatar) %}
+				{% else %}
+					{% set imagen_perfil = url_for('static', filename='assets/avatar.png') %}
+				{% endif %}
+				<div class="column">
+					<div class="profile-container">
+						<label for="avatar">Imagen de perfil</label><br>
+						<img src="{{ imagen_perfil }}" alt="" height="164" width="164" class="profilepic edit" id="profilepic">
+						<input hidden type="file" class="custom-file-input" id="avatar" name="avatar" accept=".jpg,.jpeg,.png,.webp">
+					</div>
+					<div>
+						<label for="nombre">Nombre</label>
+						<input type="text" id="nombre" name="nombre" placeholder="Ingrese su dirección de correo.." value="{{ usuario }}" autofocus>
+					
+						<label for="email">Correo electrónico</label>
+						<input type="text" id="email" name="email" placeholder="Ingrese su dirección de correo.." value="{{ email }}">
+		
+						<label for="password">Contraseña (ingresar solamente si desea cambiarla)</label>
+						<input type="password" id="password" name="password" placeholder="Ingrese su cotnraseña.." value="">
+
+					</div>
+					
+				</div>
+				<input class="button" type="submit" id="submit" value="Guardar cambios">
+			
+			
+			</form>
+		</div>
+
+	</div>
+</div>
+
+
+<script>
+	const avatar = document.querySelector('#avatar');
+	const profilepic = document.querySelector('#profilepic');
+
+	profilepic.addEventListener('click', function() {
+		avatar.click()
+	}, false);
+
+	avatar.addEventListener('change', function() {
+		imgPreview(this);
+	}, false);
+
+
+    function imgPreview(input) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+
+			reader.onload = function(e){
+				profilepic.src = e.target.result;
+			}
+
+			reader.readAsDataURL(input.files[0]);
+     	}
+    }
+
+</script>
+
+{% endblock %}

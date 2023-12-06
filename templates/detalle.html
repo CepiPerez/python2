@@ -269,6 +269,13 @@ para que se pueda acceder a la misma -->
     const pelicula_nombre = "{{respuesta['detalle']['original_title']}}";
 
 
+    // Si no hay videos extra ocultamos la seccion
+    videos = document.querySelector('.pelicula_videos')
+    if (videos.childElementCount==1) {
+        videos.style.display = 'none'
+    }
+
+
     // Redimensionamos el video (trailer)
     var w = window.innerWidth;
     w = w > 650 ? 650 : w;
@@ -278,6 +285,7 @@ para que se pueda acceder a la misma -->
     videoframe.setAttribute('height', h);
     videoframe.setAttribute('width', w);
 
+    
     function cambiarFavorito() {
         if (es_favorito) quitarFavorito()
         else agregarFavorito()
