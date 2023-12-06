@@ -7,8 +7,8 @@ from werkzeug.utils import secure_filename
 from conector import Conector
 from usuarios import Usuarios
 
-conexion = Conector(host='127.0.0.1', user='root', password='root', database='miapp')
-#conexion = Conector(host='CepiPerez.mysql.pythonanywhere-services.com', user='CepiPerez', password='codoacodo2023', database='CepiPerez$codoacodo')
+#conexion = Conector(host='127.0.0.1', user='root', password='root', database='miapp')
+conexion = Conector(host='CepiPerez.mysql.pythonanywhere-services.com', user='CepiPerez', password='codoacodo2023', database='CepiPerez$codoacodo')
 usuarios = Usuarios(conexion)
 
 api_headers = {
@@ -25,7 +25,8 @@ app.jinja_env.add_extension('jinja2.ext.do')
 CORS(app)  # Esto habilitará CORS para todas las rutas
 
 # Carpeta para guardar las imagenes.
-RUTA_DESTINO = './static/imagenes/'
+#RUTA_DESTINO = './static/imagenes/'
+RUTA_DESTINO = '/home/CepiPerez/mysite/static/imagenes/'
 
 
 #-------------------------------------------------------------------------------
